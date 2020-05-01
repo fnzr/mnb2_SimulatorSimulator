@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Globalization;
-using CsvHelper.Configuration;
+using MongoDB.Bson.Serialization;
 
 namespace BannerlordSimulator
 {
@@ -33,7 +32,7 @@ namespace BannerlordSimulator
         public int DefenderCasualties { get; set; }
         public int Duels { get; set; }
         public int DuelTies => Duels - (AttackerCasualties + DefenderCasualties);
-        public BattleState BattleState => _simulation.BattleState;
+        public bool AttackerVictory => _simulation.BattleState == BattleState.AttackerVictory;
         public double AttackerTroopsUsed { get; set; }
         public double DefenderTroopsUsed { get; set; }
         public double TacticalAdvantage { get; set; }
@@ -43,17 +42,19 @@ namespace BannerlordSimulator
         public double AverageAttackerTroopLevel => Math.Round(AttackerTroopTier / AttackerTroopsUsed, 2);
         public double AverageDefenderTroopLevel => Math.Round(DefenderTroopTier / DefenderTroopsUsed, 2);
 
-    }
+        public double AverageLevelDifference => Math.Round(AverageAttackerTroopLevel - AverageDefenderTroopLevel, 3);
 
-    public sealed class StatisticsMap : ClassMap<Statistics>
-    {
-        public StatisticsMap()
+        public static void GetClassMap(BsonClassMap cm)
         {
-            AutoMap(CultureInfo.InvariantCulture);
-            Map(m => m.AttackerTroopsUsed).Ignore();
-            Map(m => m.DefenderTroopsUsed).Ignore();
-            Map(m => m.AttackerTroopTier).Ignore();
-            Map(m => m.DefenderTroopTier).Ignore();
+            cm.MapProperty(nameof(Rounds));
+            cm.MapProperty(nameof(AttackerCasualties));
+            cm.MapProperty(nameof(DefenderCasualties));
+            cm.MapProperty(nameof(DuelTies));
+            cm.MapProperty(nameof(Duels));
+            cm.MapProperty(nameof(AttackerVictory));
+            cm.MapProperty(nameof(AverageLevelDifference));
+            cm.MapProperty(nameof(TacticalAdvantage));
         }
+
     }
 }

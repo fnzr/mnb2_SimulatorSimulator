@@ -67,8 +67,8 @@ namespace BannerlordSimulator
             statistics.AttackerTroopsUsed += attackers.Count;
             statistics.DefenderTroopsUsed += defenders.Count;
 
-            statistics.AttackerTroopTier = attackers.Sum(t => t.Tier);
-            statistics.DefenderTroopTier = defenders.Sum(t => t.Tier);
+            statistics.AttackerTroopTier += attackers.Sum(t => t.Tier);
+            statistics.DefenderTroopTier += defenders.Sum(t => t.Tier);
 
         }
     }
